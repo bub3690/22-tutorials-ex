@@ -178,11 +178,10 @@ iOS
 
 3.  **이미지 영역 분할 데모 App을 커스텀 라이브러리들과 링크해줍니다.**:
 
-Xcode에서 프로젝트를 열고,  
-Open your project in XCode, go to your project Target’s **Build Phases - Link Binaries With Libraries**, click the **+** sign and add all the library files located in `build_ios/install/lib`. Navigate to the project **Build Settings**, set the value **Header Search Paths** to `build_ios/install/include` and **Library Search Paths** to `build_ios/install/lib`.
-In the build settings, search for **other linker flags**. Add a custom linker flag below `-all_load`.
-Finally, disable bitcode for your target by selecting the Build Settings, searching for Enable Bitcode, and set the value to **No**.
-
+Xcode에서 프로젝트를 열고, 목표 프로젝트의 **Build Phases - Link Binaries With Libraries** 로 가서, **+** 기호를 클릭하고 `build_ios/install/lib`에 위치한 모든 라이브러리 파일들을 추가합니다.
+프로젝트 **Build Settings**로 이동하여, **Header Search Paths**에서 값을 `build_ios/install/include`로 값을 설정하고 **Library Search Paths**를 `build_ios/install/lib`로 값을 설정합니다.
+build settings에서, **other linker flags**를 검색합니다 . `-all_load` 아래에 커스텀 링커 플래그를 추가합니다.
+마지막으로, 목표를 위해 Build Settings에서 bitcode를 사용하지 못하게 선택해야 합니다, Enable Bitcode를 검색하여, **No** 값으로 설정합니다.
 
 4. **Xcode에서 App을 빌드하고 테스트합니다.**
 
@@ -197,19 +196,10 @@ Conclusion
 
 커스텀 빌드는 여전히 개발중이고, 앞으로 미래에도 계속 사이즈를 개선시킬 것입니다. 그러나, API들은 미래 version에 따라 종속된다는 것을 주의하세요.
 
-읽어주셔서 감사합니다! 
+읽어주셔서 감사합니다! 언제나, 어떤 피드백이든 환영합니다, 그러니  <https://github.com/pytorch/pytorch/issues>`에 이슈를 생성해주세요.
 
-In this tutorial, we demonstrated a new way to custom build PyTorch's efficient mobile interpreter - tracing-based selective build, in an Android and iOS app.
+더 배우기
 
-We walked through an Image Segmentation example to show how to bundle inputs to a model, generated operator list by tracing the model with bundled input, and build a custom torch library from source with the operator list from tracing result.
+- Pytorch 모바일에 대해 더 배우기 위해서는, Pytorch 모바일 홈페이지 <https://pytorch.org/mobile/home/>를 참조해주세요.
 
-The custom build is still under development, and we will continue improving its size in the future. Note, however, that the APIs are subject to change in future versions.
-
-Thanks for reading! As always, we welcome any feedback, so please create an issue here <https://github.com/pytorch/pytorch/issues>`.
-
-Learn More
-
-
-- To learn more about PyTorch Mobile, please refer to PyTorch Mobile Home Page <https://pytorch.org/mobile/home/>
-
-* To learn more about Image Segmentation, please refer to the Image Segmentation DeepLabV3 on Android Recipe <https://tutorials.pytorch.kr/beginner/deeplabv3_on_android.html>_
+* 이미지 영역 분할에 대해 더 배우려면, Andorid Recipe의 Image Segmentation DeepLabV3를 참조해주세요 <https://tutorials.pytorch.kr/beginner/deeplabv3_on_android.html>_
