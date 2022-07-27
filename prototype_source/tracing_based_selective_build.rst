@@ -1,24 +1,25 @@
-(prototype)  추적-기반 선택적 빌드 모바일 Android,iOS 인터프리터
+(prototype)  추적-기반 선택적 빌드 모바일 Android, iOS 인터프리터
 ===============================================================================
 
 
 *저자*: Chen Lai <https://github.com/cccclai>, Dhruv Matani <https://github.com/dhruvbird>
+*역자*: Lee Jong Bub <https://github.com/bub3690>
 
 
 .. 경고::
-추적-기반 선택 빌드는 라이브러리 사이즈를 줄이기 위한 프로토타입 기능입니다. 추적된 결과는 모델 입력과 추적된 환경에 의존 하기때문에, 
+추적-기반 선택적 빌드는 라이브러리 사이즈를 줄이기 위한 프로토타입 기능입니다. 추적된 결과는 모델 입력과 추적된 환경에 의존하기 때문에, 
 만약 추적기가 모바일 인터프리터가 아닌 다른 환경에서 실행하면, 연산자 리스트가 실제 사용된 연산자 리스트와 다를 수 있고 빠진 연산자들이 오류를 발생 시킬수 있습니다.
 
 Introduction
 ------------
 
-이 튜토리얼은 모바일 인터프리터 사이즈를 더욱 더 최소화 하기위해, 모바일 인터프리터 빌드를 커스터마이즈하는 새로운 방법을 소개합니다. 이것은 컴파일된 이진 파일에 포함되는 연산자들을 목표 모델에 실제로 필요로하는 집합 만큼으로 제한합니다. 파이토치의 모바일 배포의 이진 파일 사이즈를 줄이는 기술입니다. 추적 기반 선택적 빌드는 모델을 특정 대표 입력값들과 함께 동작시킵니다, 그리고 어떤 연산자들이 호출되었는지 기록합니다. 그러면 빌드는 그 연산자들만 포함하게됩니다. 
+이 튜토리얼은 모바일 인터프리터 사이즈를 더욱 더 최소화 하기위해, 모바일 인터프리터 빌드를 커스터마이즈하는 새로운 방법을 소개합니다. 컴파일된 이진 파일에 포함되는 연산자들을 목표 모델에 실제로 필요로하는 집합 만큼으로 제한합니다. 파이토치의 모바일 배포의 이진 파일 사이즈를 줄이는 기술입니다. 추적 기반 선택적 빌드는 모델을 특정 대표 입력값들과 함께 동작시킵니다, 그리고 어떤 연산자들이 호출되었는지 기록합니다. 그러면 빌드는 그 연산자들만 포함하게됩니다. 
 
 
 
-다음은  추적-기반 선택적 방법으로 커스텀 모바일 인터프리터를 제작하는 과정들입니다.
+다음은 추적-기반 선택적 방법으로 커스텀 모바일 인터프리터를 제작하는 과정들입니다.
 
-1. *인풋들과 모델을 준비한다.*
+1. *묶인 입력과 모델을 준비합니다.*
 
 .. code:: python
 
@@ -90,20 +91,20 @@ Android
 
 이미지 영역 분할 Android 데모 App을 가져옵니다 :  https://github.com/pytorch/android-demo-app/tree/master/ImageSegmentation
 
-1. **추적-기반 libtorch lite Android 빌드**: 모든 4 가지 Android abis를 대상으로 libtorch를 빌드합니다. abis : (``armeabi-v7a``, ``arm64-v8a``, ``x86``, ``x86_64``)
+1. **Android를 위한 libtorch lite 추적-기반 빌드**: 모든 4 가지 Android abis(``armeabi-v7a``, ``arm64-v8a``, ``x86``, ``x86_64``)를 대상으로 libtorch를 빌드합니다.
 
 .. code-block:: bash
 
    SELECTED_OP_LIST=${path}/deeplabv3_scripted.yaml TRACING_BASED=1  ./scripts/build_pytorch_android.sh
 
-만약 ``x86``의 Pixel4 emulator에서 테스트 된다면, cmd 에서 ``BUILD_LITE_INTERPRETER=1 ./scripts/build_pytorch_android.sh x86`` 사용하여, 빌드 시간을 절약하기 위해 abi를 명시 해줍니다.
+만약 ``x86``의 Pixel 4 emulator에서 테스트 된다면, cmd 에서 ``BUILD_LITE_INTERPRETER=1 ./scripts/build_pytorch_android.sh x86`` 사용하여, 빌드 시간을 절약하기 위해 abi를 명시 해줍니다.
 
 .. code-block:: bash
 
    SELECTED_OP_LIST=${path}/deeplabv3_scripted.yaml TRACING_BASED=1  ./scripts/build_pytorch_android.sh x86
 
 
-빌드가 끝난 후, 라이브러리 경로를 보여줄 것 입니다 : 
+빌드가 끝난 후, 라이브러리 경로를 보여줄 것입니다 : 
 
 .. code-block:: bash
 
@@ -114,10 +115,10 @@ Android
    -rw-r--r--  1 chenlai  staff    13M Feb 11 11:48 /Users/chenlai/pytorch/android/pytorch_android/build/outputs/aar/pytorch_android-release.aar
    -rw-r--r--  1 chenlai  staff    36K Feb  9 16:45 /Users/chenlai/pytorch/android/pytorch_android_torchvision/build/outputs/aar/pytorch_android_torchvision-release.aar
 
-2. **이미지 영역 분할 App 소스에서 빌드된 Pytorch Android 라이브러리를 사용합니다.**: 경로에 `libs` 폴더를 생성, 경로는 root 저장소로 부터 `ImageSegmentation/app/libs`가 됩니다. 
+2. **이미지 영역 분할 App 소스에서 빌드된 Pytorch Android 라이브러리를 사용합니다.**: 경로에 `libs` 폴더를 만들고, 경로는 root 저장소로 부터 `ImageSegmentation/app/libs`가 됩니다. 
 `pytorch_android-release`를 경로 ``ImageSegmentation/app/libs/pytorch_android-release.aar``에 복사합니다. 
 `pytorch_android_torchvision` (다운로드 : `Pytorch Android Torchvision Nightly <https://oss.sonatype.org/#nexus-search;quick~torchvision_android/>`_)를 경로 ``ImageSegmentation/app/libs/pytorch_android_torchvision.aar``에 복사합니다. 
-``ImageSegmentation/app/build.gradle``에서 `dependencies` 파트를 다음 코드와 같이 수정합니다 :
+``ImageSegmentation/app/build.gradle``에서 `dependencies` 부분을 다음 코드와 같이 수정합니다 :
 
 .. code:: gradle
 
@@ -190,7 +191,7 @@ build settings에서, **other linker flags**를 검색합니다 . `-all_load` �
 Conclusion
 ----------
 
-이 튜토리얼에서는, Android와 iOS App에서 효율적인 Pyotorch 모바일 인터프리터를 커스텀 빌드하는 새로운 방법을 시연했습니다 - 추적-기반 선택적 빌드. 
+이 튜토리얼에서는, Android와 iOS App에서 효율적인 Pyotorch 모바일 인터프리터를 커스텀 빌드하는 새로운 방법인 추적-기반 선택적 빌드를 시연했습니다.  
 
 이미지 영역 분할 예제를 수행하며 모델에 들어갈 인풋을 어떻게 묶는지 보여주었고, 묶인 인풋과 모델을 추적함으로써 연산자 리스트를 생성했고,  추적된 결과의 연산자 리스트와 소스로 커스텀 torch 라이브러리를 빌드했습니다.
 
